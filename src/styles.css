@@ -1,3 +1,72 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+  ETLIONS NOTARIAL — Portal del cliente
+  Direction contract (impeccable new-work, brief-pinned — no concept roll)
+
+  THESIS: Ya no es "una notaría", es un solo expediente digital que cruza dos
+  roles; el portal hace tangible la fe pública sin la sala de espera.
+  OWN-WORLD: Navy #0A2540 (autoridad) + Coral #E67E50 (acción) sobre blanco y
+  gris #F5F7FA; cards blancas r-12/16, badges circulares numerados, iconografía
+  outline fina, timeline vertical con nodos de color semántico, Inter.
+  STORY: el cliente entiende que puede resolver su trámite sin ir
+  presencialmente, compara notarías con precio/tiempo visibles, y firma desde
+  el celular con confianza.
+  FIRST VIEWPORT: landing con catálogo de trámites, tarjeta por trámite con
+  notaría/precio/demora, CTA coral único "Iniciar trámite".
+  FORM: sistema cards + badges + timeline ya definido por el cliente, aplicado
+  con disciplina en las 5 pantallas del portal.
+
+  Font note: Inter is brief-pinned by the client ("Sans-serif moderna (Inter,
+  Helvetica Neue o similar)"), not a default — kept as-is, hook finding
+  suppressed via ignore-value.
+*/
 
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Brand */
+  --color-navy-950: #061626;
+  --color-navy-900: #0a2540;
+  --color-navy-700: #163a5c;
+  --color-navy-500: #2f557c;
+  --color-navy-300: #8fa4bd;
+
+  --color-coral-600: #d96a3d;
+  --color-coral-500: #e67e50;
+  --color-coral-400: #ed9a73;
+  --color-coral-100: #fbe7dd;
+  --color-coral-50: #fdf3ee;
+
+  --color-sand-50: #f5f7fa;
+  --color-sand-100: #eef1f5;
+
+  --color-ink-700: #1f2937;
+  --color-ink-500: #6b7280;
+  --color-ink-300: #9ca3af;
+
+  /* Status semantics (expediente lifecycle) */
+  --color-status-draft: #9ca3af;
+  --color-status-review: #64748b;
+  --color-status-observed: #d97706;
+  --color-status-approved: #0a2540;
+  --color-status-signed: #e67e50;
+  --color-status-legalized: #0f9d6e;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink-700);
+  background: var(--color-sand-50);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-navy-900);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

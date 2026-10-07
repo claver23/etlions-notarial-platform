@@ -1,0 +1,83 @@
+@if (tramite; as t) {
+  <div class="border-b border-[var(--color-sand-100)] bg-white">
+    <div class="mx-auto max-w-4xl px-5 py-8">
+      <a routerLink="/" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-ink-500)] hover:text-[var(--color-navy-900)]">
+        <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M12.5 16L6.5 10l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        Catálogo de trámites
+      </a>
+      <span class="mt-5 block text-xs font-semibold uppercase tracking-wide text-[var(--color-coral-600)]">{{ t.categoria }}</span>
+      <h1 class="mt-1.5 text-3xl font-extrabold leading-tight tracking-tight text-[var(--color-navy-900)]">{{ t.nombre }}</h1>
+      <p class="mt-3 max-w-2xl text-base leading-relaxed text-[var(--color-ink-500)]">{{ t.descripcion }}</p>
+
+      <div class="mt-6 flex flex-wrap gap-6 border-t border-[var(--color-sand-100)] pt-5">
+        <div>
+          <p class="text-xs font-medium text-[var(--color-ink-500)]">Precio desde</p>
+          <p class="text-xl font-bold text-[var(--color-navy-900)]">S/ {{ t.precioDesde }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-[var(--color-ink-500)]">Demora estimada</p>
+          <p class="text-xl font-bold text-[var(--color-navy-900)]">{{ t.demoraDesde }} día(s) hábil(es)</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-[var(--color-ink-500)]">Notarías disponibles</p>
+          <p class="text-xl font-bold text-[var(--color-navy-900)]">{{ t.notarias.length }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 px-5 py-10 lg:grid-cols-[1.1fr_1fr]">
+    <section>
+      <h2 class="text-lg font-bold tracking-tight text-[var(--color-navy-900)]">Requisitos</h2>
+      <ul class="mt-4 flex flex-col gap-3">
+        @for (req of t.requisitos; track req) {
+          <li class="flex items-start gap-3 rounded-xl bg-white p-4 text-sm text-[var(--color-ink-700)] shadow-[0_1px_2px_rgba(10,37,64,0.04)]">
+            <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-coral-500)]"><path d="M4 10.5l3.5 3.5L16 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            {{ req }}
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-lg font-bold tracking-tight text-[var(--color-navy-900)]">Notarías disponibles</h2>
+      <ul class="mt-4 flex flex-col gap-3">
+        @for (oferta of t.notarias; track oferta.notariaId) {
+          <li class="rounded-xl border border-[var(--color-sand-100)] bg-white p-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-sm font-bold text-[var(--color-navy-900)]">{{ oferta.notariaNombre }}</p>
+                <p class="text-xs text-[var(--color-ink-500)]">{{ oferta.distrito }}</p>
+              </div>
+              <span class="inline-flex items-center gap-1 text-xs font-semibold text-[var(--color-navy-900)]">
+                <svg viewBox="0 0 20 20" fill="none" class="h-3.5 w-3.5 text-[var(--color-coral-500)]"><path d="M10 2.5l2.2 4.6 5 .7-3.6 3.6.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.6 5-.7 2.2-4.6Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" /></svg>
+                {{ oferta.calificacion }}
+              </span>
+            </div>
+            <div class="mt-3 flex items-center justify-between border-t border-[var(--color-sand-100)] pt-3 text-sm">
+              <span class="font-bold text-[var(--color-navy-900)]">S/ {{ oferta.precio }}</span>
+              <span class="text-[var(--color-ink-500)]">{{ oferta.demoraHabiles }} día(s) hábil(es)</span>
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <div class="sticky bottom-0 border-t border-[var(--color-sand-100)] bg-white/95 px-5 py-4 backdrop-blur">
+    <div class="mx-auto max-w-4xl">
+      <button
+        type="button"
+        (click)="iniciarTramite()"
+        class="w-full rounded-full bg-[var(--color-coral-500)] py-4 text-base font-bold text-white transition hover:bg-[var(--color-coral-600)] sm:w-auto sm:px-10"
+      >
+        Iniciar trámite
+      </button>
+    </div>
+  </div>
+} @else {
+  <div class="mx-auto max-w-4xl px-5 py-20 text-center">
+    <p class="text-sm font-semibold text-[var(--color-navy-900)]">No encontramos este trámite.</p>
+    <a routerLink="/" class="mt-3 inline-block text-sm font-semibold text-[var(--color-coral-600)] underline">Volver al catálogo</a>
+  </div>
+}

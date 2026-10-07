@@ -1,0 +1,46 @@
+<ol class="relative flex flex-col gap-0">
+  @for (estado of secuencia; track estado; let last = $last, i = $index) {
+    @if (estado !== 'observado') {
+      <li class="relative flex gap-4 pb-8 last:pb-0">
+        @if (!last) {
+          <span
+            class="absolute left-[15px] top-8 h-[calc(100%-1.5rem)] w-px"
+            [style.background]="estaAlcanzado(secuencia[i + 1]) || (esActual('observado') && estado === 'en_revision') ? info(estado).colorVar : '#e5e7eb'"
+          ></span>
+        }
+
+        <span
+          class="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold"
+          [style.borderColor]="estaAlcanzado(estado) || (esActual('observado') && estado === 'en_revision') ? info(estado).colorVar : '#d1d5db'"
+          [style.background]="estaAlcanzado(estado) && !esActual(estado) ? info(estado).colorVar : '#ffffff'"
+          [style.color]="estaAlcanzado(estado) && !esActual(estado) ? '#ffffff' : (estaAlcanzado(estado) ? info(estado).colorVar : '#9ca3af')"
+        >
+          @if (estaAlcanzado(estado) && !esActual(estado) && !(esActual('observado') && estado === 'en_revision')) {
+            <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M4 10.5l3.5 3.5L16 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          } @else {
+            {{ i + 1 }}
+          }
+        </span>
+
+        <div class="flex-1 pt-0.5">
+          <p
+            class="text-sm font-semibold tracking-tight"
+            [style.color]="estaAlcanzado(estado) ? 'var(--color-ink-700)' : 'var(--color-ink-300)'"
+          >
+            {{ info(estado).label }}
+          </p>
+          @if (fechaDe(estado); as fecha) {
+            <p class="text-xs text-[var(--color-ink-500)]">{{ fecha }}</p>
+          }
+
+          @if (esActual('observado') && estado === 'en_revision') {
+            <div class="mt-2 flex items-start gap-2 rounded-lg px-3 py-2 text-xs font-medium" style="background:#fdf0dd; color:var(--color-status-observed);">
+              <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 h-3.5 w-3.5 shrink-0"><path d="M10 6.5v4M10 13.3h.01M8.9 3.1l-7 12.1a1.6 1.6 0 0 0 1.4 2.4h13.4a1.6 1.6 0 0 0 1.4-2.4l-7-12.1a1.6 1.6 0 0 0-2.8 0Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Observado: {{ historial[historial.length - 1]?.nota || 'revisa los documentos marcados' }}</span>
+            </div>
+          }
+        </div>
+      </li>
+    }
+  }
+</ol>

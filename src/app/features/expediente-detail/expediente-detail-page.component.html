@@ -1,0 +1,66 @@
+@if (expediente; as e) {
+  <div class="border-b border-[var(--color-sand-100)] bg-white">
+    <div class="mx-auto max-w-4xl px-5 py-8">
+      <a routerLink="/mis-tramites" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-ink-500)] hover:text-[var(--color-navy-900)]">
+        <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M12.5 16L6.5 10l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        Mis trámites
+      </a>
+
+      <div class="mt-5 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p class="text-xs font-semibold text-[var(--color-ink-500)]">{{ e.codigo }}</p>
+          <h1 class="mt-0.5 text-2xl font-extrabold tracking-tight text-[var(--color-navy-900)]">{{ e.tramiteNombre }}</h1>
+          <p class="mt-0.5 text-sm text-[var(--color-ink-500)]">{{ e.notariaNombre }}</p>
+        </div>
+        <app-status-badge [estado]="e.estado" />
+      </div>
+
+      @if (e.accionPendiente) {
+        <div class="mt-5 flex items-start gap-3 rounded-xl border border-[var(--color-coral-100)] bg-[var(--color-coral-50)] p-4">
+          <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 h-4.5 w-4.5 shrink-0 text-[var(--color-coral-600)]"><path d="M10 6.5v4M10 13.3h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5" /></svg>
+          <p class="text-sm font-medium leading-relaxed text-[var(--color-navy-900)]">{{ e.accionPendiente }}</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 px-5 py-10 lg:grid-cols-[1fr_1.2fr]">
+    <section>
+      <h2 class="text-lg font-bold tracking-tight text-[var(--color-navy-900)]">Avance del trámite</h2>
+      <div class="mt-5 rounded-2xl border border-[var(--color-sand-100)] bg-white p-5">
+        <app-progress-timeline [estadoActual]="e.estado" [historial]="e.historial" />
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-lg font-bold tracking-tight text-[var(--color-navy-900)]">Documentos</h2>
+      <ul class="mt-5 flex flex-col gap-3">
+        @for (doc of e.documentos; track doc.id) {
+          <li class="rounded-xl border border-[var(--color-sand-100)] bg-white p-4">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <svg viewBox="0 0 20 20" fill="none" class="h-5 w-5 shrink-0 text-[var(--color-ink-500)]"><rect x="4" y="2.5" width="12" height="15" rx="1.5" stroke="currentColor" stroke-width="1.5" /><path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+                <span class="text-sm font-semibold text-[var(--color-navy-900)]">{{ doc.nombre }}</span>
+              </div>
+              <span
+                class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold"
+                [style.background]="doc.estado === 'observado' ? '#fdf0dd' : doc.estado === 'validado' ? '#e3f6ef' : '#eef1f5'"
+                [style.color]="doc.estado === 'observado' ? 'var(--color-status-observed)' : doc.estado === 'validado' ? 'var(--color-status-legalized)' : 'var(--color-ink-500)'"
+              >
+                {{ etiquetaDocumento[doc.estado] }}
+              </span>
+            </div>
+            @if (doc.observacion) {
+              <p class="mt-2 pl-8 text-xs leading-relaxed text-[var(--color-status-observed)]">{{ doc.observacion }}</p>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+} @else {
+  <div class="mx-auto max-w-4xl px-5 py-20 text-center">
+    <p class="text-sm font-semibold text-[var(--color-navy-900)]">No encontramos este expediente.</p>
+    <a routerLink="/mis-tramites" class="mt-3 inline-block text-sm font-semibold text-[var(--color-coral-600)] underline">Volver a mis trámites</a>
+  </div>
+}

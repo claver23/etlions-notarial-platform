@@ -1,0 +1,110 @@
+<section class="border-b border-[var(--color-sand-100)] bg-white">
+  <div class="mx-auto max-w-6xl px-5 pb-12 pt-14 sm:pt-20">
+    <div class="max-w-2xl">
+      <h1 class="text-4xl font-extrabold leading-[1.1] tracking-tight text-[var(--color-navy-900)] sm:text-5xl">
+        Tu trámite notarial, sin ir a la notaría.
+      </h1>
+      <p class="mt-5 text-lg leading-relaxed text-[var(--color-ink-500)]">
+        Elige entre varias notarías, compara precio y tiempo, y sigue tu expediente paso a paso
+        desde tu celular. Firma donde estés, con validez legal.
+      </p>
+    </div>
+
+    <dl class="mt-10 grid grid-cols-1 gap-6 border-t border-[var(--color-sand-100)] pt-8 sm:grid-cols-3">
+      <div>
+        <dt class="text-sm font-semibold text-[var(--color-navy-900)]">Varias notarías</dt>
+        <dd class="mt-1 text-sm leading-relaxed text-[var(--color-ink-500)]">Compara precio y demora antes de elegir.</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-semibold text-[var(--color-navy-900)]">100% digital</dt>
+        <dd class="mt-1 text-sm leading-relaxed text-[var(--color-ink-500)]">Carga tus documentos desde el celular o la computadora.</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-semibold text-[var(--color-navy-900)]">Sin filas</dt>
+        <dd class="mt-1 text-sm leading-relaxed text-[var(--color-ink-500)]">Sigue el avance de tu expediente en tiempo real.</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<section class="mx-auto max-w-6xl px-5 py-10">
+  <h2 class="text-xl font-bold tracking-tight text-[var(--color-navy-900)]">Explora los trámites disponibles</h2>
+
+  <div class="mt-5 flex flex-col gap-4">
+    <label class="relative block">
+      <span class="sr-only">Buscar trámite</span>
+      <svg viewBox="0 0 20 20" fill="none" class="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-[var(--color-ink-300)]">
+        <circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6" />
+        <path d="M18 18l-3.8-3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <input
+        type="search"
+        [value]="query()"
+        (input)="query.set($any($event.target).value)"
+        placeholder="Busca por nombre, por ejemplo «compraventa» o «poder»"
+        class="w-full rounded-xl border border-[var(--color-sand-100)] bg-white py-3.5 pl-11 pr-4 text-sm text-[var(--color-ink-700)] placeholder:text-[var(--color-ink-300)] focus:border-[var(--color-navy-900)] focus:outline-none"
+      />
+    </label>
+
+    <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoría">
+      @for (categoria of categorias; track categoria) {
+        <button
+          type="button"
+          (click)="seleccionarCategoria(categoria)"
+          [attr.aria-pressed]="categoriaActiva() === categoria"
+          class="rounded-full border px-3.5 py-1.5 text-sm font-medium transition"
+          [class.border-[var(--color-navy-900)]]="categoriaActiva() === categoria"
+          [class.bg-[var(--color-navy-900)]]="categoriaActiva() === categoria"
+          [class.text-white]="categoriaActiva() === categoria"
+          [class.border-[var(--color-sand-100)]]="categoriaActiva() !== categoria"
+          [class.text-[var(--color-ink-500)]]="categoriaActiva() !== categoria"
+        >
+          {{ categoria }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (resultados().length) {
+    <ul class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      @for (tramite of resultados(); track tramite.id) {
+        <li>
+          <a
+            [routerLink]="['/tramite', tramite.id]"
+            class="group flex h-full flex-col rounded-2xl border border-[var(--color-sand-100)] bg-white p-6 shadow-[0_1px_2px_rgba(10,37,64,0.04)] transition hover:border-[var(--color-coral-400)] hover:shadow-[0_8px_24px_rgba(10,37,64,0.08)]"
+          >
+            <span class="text-xs font-semibold uppercase tracking-wide text-[var(--color-coral-600)]">{{ tramite.categoria }}</span>
+            <h3 class="mt-2 text-lg font-bold leading-snug tracking-tight text-[var(--color-navy-900)]">{{ tramite.nombre }}</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-[var(--color-ink-500)]">{{ tramite.resumen }}</p>
+
+            <div class="mt-5 flex items-center justify-between border-t border-[var(--color-sand-100)] pt-4 text-sm">
+              <div>
+                <p class="font-bold text-[var(--color-navy-900)]">Desde S/ {{ tramite.precioDesde }}</p>
+                <p class="text-xs text-[var(--color-ink-500)]">{{ tramite.demoraDesde }} día(s) hábil(es) · {{ tramite.notarias.length }} notarías</p>
+              </div>
+              <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-sand-100)] text-[var(--color-navy-900)] transition group-hover:bg-[var(--color-coral-500)] group-hover:text-white">
+                <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M7 4l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </span>
+            </div>
+          </a>
+        </li>
+      }
+    </ul>
+  } @else {
+    <div class="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-[var(--color-sand-100)] px-6 py-14 text-center">
+      <svg viewBox="0 0 20 20" fill="none" class="h-9 w-9 text-[var(--color-ink-300)]">
+        <circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.5" />
+        <path d="M18 18l-3.8-3.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+      <p class="mt-4 text-sm font-semibold text-[var(--color-navy-900)]">No encontramos trámites con esos filtros</p>
+      <p class="mt-1 text-sm text-[var(--color-ink-500)]">Prueba con otra palabra o quita los filtros aplicados.</p>
+      <button
+        type="button"
+        (click)="limpiarFiltros()"
+        class="mt-5 rounded-full border border-[var(--color-navy-900)] px-4 py-2 text-sm font-semibold text-[var(--color-navy-900)] transition hover:bg-[var(--color-navy-900)] hover:text-white"
+      >
+        Quitar filtros
+      </button>
+    </div>
+  }
+</section>

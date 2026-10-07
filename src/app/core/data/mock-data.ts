@@ -1,0 +1,166 @@
+import { Tramite } from '../models/tramite.model';
+import { Expediente } from '../models/expediente.model';
+
+// Datos de ejemplo — ninguna notaría, precio o cliente es real.
+// Reemplazar con datos del catálogo de cada notaría antes de producción.
+
+export const TRAMITES_MOCK: Tramite[] = [
+  {
+    id: 'compraventa-vehicular',
+    nombre: 'Compraventa de vehículo',
+    categoria: 'Compraventa',
+    resumen: 'Transferencia de propiedad vehicular con minuta y firma de ambas partes.',
+    descripcion:
+      'Formaliza la venta de un vehículo con minuta notarial, verificación de las partes y preparación del parte para su inscripción en SUNARP.',
+    requisitos: [
+      'DNI vigente de comprador y vendedor',
+      'Tarjeta de propiedad del vehículo',
+      'Certificado de gravamen (no mayor a 30 días)',
+      'Comprobante de pago del impuesto vehicular',
+    ],
+    precioDesde: 180,
+    demoraDesde: 2,
+    notarias: [
+      { notariaId: 'n-1', notariaNombre: 'Notaría Ejemplo Miraflores', distrito: 'Miraflores', precio: 180, demoraHabiles: 2, calificacion: 4.8 },
+      { notariaId: 'n-2', notariaNombre: 'Notaría Ejemplo San Isidro', distrito: 'San Isidro', precio: 210, demoraHabiles: 2, calificacion: 4.7 },
+      { notariaId: 'n-3', notariaNombre: 'Notaría Ejemplo Surco', distrito: 'Surco', precio: 165, demoraHabiles: 3, calificacion: 4.6 },
+    ],
+  },
+  {
+    id: 'poder-fuera-registro',
+    nombre: 'Poder fuera de registro',
+    categoria: 'Poderes',
+    resumen: 'Otorga facultades a un tercero para un acto específico, sin inscripción registral.',
+    descripcion:
+      'Documento mediante el cual una persona autoriza a otra a representarla en un trámite puntual (bancario, administrativo o judicial simple).',
+    requisitos: ['DNI vigente del poderdante', 'Datos completos del apoderado', 'Detalle del acto a realizar'],
+    precioDesde: 90,
+    demoraDesde: 1,
+    notarias: [
+      { notariaId: 'n-1', notariaNombre: 'Notaría Ejemplo Miraflores', distrito: 'Miraflores', precio: 90, demoraHabiles: 1, calificacion: 4.8 },
+      { notariaId: 'n-4', notariaNombre: 'Notaría Ejemplo La Molina', distrito: 'La Molina', precio: 95, demoraHabiles: 1, calificacion: 4.9 },
+    ],
+  },
+  {
+    id: 'testamento-cerrado',
+    nombre: 'Testamento cerrado',
+    categoria: 'Testamentos',
+    resumen: 'Disposición de última voluntad redactada por el testador, custodiada por el notario.',
+    descripcion:
+      'El testador entrega su testamento en sobre cerrado; el notario certifica el acto sin conocer el contenido y lo custodia conforme a ley.',
+    requisitos: ['DNI vigente', 'Documento testamentario en sobre cerrado', 'Dos testigos hábiles'],
+    precioDesde: 320,
+    demoraDesde: 3,
+    notarias: [
+      { notariaId: 'n-2', notariaNombre: 'Notaría Ejemplo San Isidro', distrito: 'San Isidro', precio: 320, demoraHabiles: 3, calificacion: 4.7 },
+      { notariaId: 'n-3', notariaNombre: 'Notaría Ejemplo Surco', distrito: 'Surco', precio: 300, demoraHabiles: 4, calificacion: 4.6 },
+    ],
+  },
+  {
+    id: 'constitucion-empresa',
+    nombre: 'Constitución de empresa (S.A.C.)',
+    categoria: 'Constitución de empresa',
+    resumen: 'Minuta y escritura pública para constituir una sociedad anónima cerrada.',
+    descripcion:
+      'Incluye elaboración de minuta, escritura pública y preparación del parte notarial para su inscripción registral en SUNARP.',
+    requisitos: ['DNI vigente de todos los socios', 'Reserva de nombre en SUNARP', 'Capital social y aportes definidos'],
+    precioDesde: 450,
+    demoraDesde: 5,
+    notarias: [
+      { notariaId: 'n-1', notariaNombre: 'Notaría Ejemplo Miraflores', distrito: 'Miraflores', precio: 480, demoraHabiles: 5, calificacion: 4.8 },
+      { notariaId: 'n-4', notariaNombre: 'Notaría Ejemplo La Molina', distrito: 'La Molina', precio: 450, demoraHabiles: 6, calificacion: 4.9 },
+    ],
+  },
+  {
+    id: 'declaracion-jurada-domicilio',
+    nombre: 'Declaración jurada de domicilio',
+    categoria: 'Declaraciones juradas',
+    resumen: 'Certifica el domicilio actual del declarante para trámites administrativos.',
+    descripcion: 'Documento simple que certifica, bajo declaración jurada, el domicilio real del solicitante.',
+    requisitos: ['DNI vigente', 'Recibo de servicio con la dirección a declarar'],
+    precioDesde: 45,
+    demoraDesde: 1,
+    notarias: [
+      { notariaId: 'n-3', notariaNombre: 'Notaría Ejemplo Surco', distrito: 'Surco', precio: 45, demoraHabiles: 1, calificacion: 4.6 },
+      { notariaId: 'n-2', notariaNombre: 'Notaría Ejemplo San Isidro', distrito: 'San Isidro', precio: 55, demoraHabiles: 1, calificacion: 4.7 },
+    ],
+  },
+];
+
+export const EXPEDIENTES_MOCK: Expediente[] = [
+  {
+    id: 'exp-2026-0142',
+    codigo: 'EXP-2026-0142',
+    tramiteNombre: 'Compraventa de vehículo',
+    notariaNombre: 'Notaría Ejemplo Miraflores',
+    estado: 'en_revision',
+    creado: '2026-09-28',
+    actualizado: '2026-10-02',
+    accionPendiente: 'Tu expediente está en revisión. Te avisaremos si falta algo.',
+    documentos: [
+      { id: 'd1', nombre: 'DNI comprador', obligatorio: true, estado: 'validado' },
+      { id: 'd2', nombre: 'DNI vendedor', obligatorio: true, estado: 'validado' },
+      { id: 'd3', nombre: 'Tarjeta de propiedad', obligatorio: true, estado: 'cargado' },
+      { id: 'd4', nombre: 'Certificado de gravamen', obligatorio: true, estado: 'cargado' },
+    ],
+    historial: [
+      { estado: 'borrador', fecha: '2026-09-28' },
+      { estado: 'en_revision', fecha: '2026-10-02' },
+    ],
+  },
+  {
+    id: 'exp-2026-0098',
+    codigo: 'EXP-2026-0098',
+    tramiteNombre: 'Poder fuera de registro',
+    notariaNombre: 'Notaría Ejemplo La Molina',
+    estado: 'observado',
+    creado: '2026-09-15',
+    actualizado: '2026-09-30',
+    accionPendiente: 'El validador observó un documento. Vuelve a cargarlo para continuar.',
+    documentos: [
+      { id: 'd1', nombre: 'DNI del poderdante', obligatorio: true, estado: 'observado', observacion: 'La imagen está borrosa, vuelve a escanear.' },
+      { id: 'd2', nombre: 'Datos del apoderado', obligatorio: true, estado: 'validado' },
+    ],
+    historial: [
+      { estado: 'borrador', fecha: '2026-09-15' },
+      { estado: 'en_revision', fecha: '2026-09-20' },
+      { estado: 'observado', fecha: '2026-09-30', nota: 'DNI del poderdante ilegible' },
+    ],
+  },
+  {
+    id: 'exp-2026-0071',
+    codigo: 'EXP-2026-0071',
+    tramiteNombre: 'Declaración jurada de domicilio',
+    notariaNombre: 'Notaría Ejemplo Surco',
+    estado: 'legalizado',
+    creado: '2026-08-20',
+    actualizado: '2026-08-24',
+    documentos: [
+      { id: 'd1', nombre: 'DNI vigente', obligatorio: true, estado: 'validado' },
+      { id: 'd2', nombre: 'Recibo de servicio', obligatorio: true, estado: 'validado' },
+    ],
+    historial: [
+      { estado: 'borrador', fecha: '2026-08-20' },
+      { estado: 'en_revision', fecha: '2026-08-21' },
+      { estado: 'aprobado', fecha: '2026-08-22' },
+      { estado: 'firmado', fecha: '2026-08-23' },
+      { estado: 'legalizado', fecha: '2026-08-24' },
+    ],
+  },
+  {
+    id: 'exp-2026-0150',
+    codigo: 'EXP-2026-0150',
+    tramiteNombre: 'Constitución de empresa (S.A.C.)',
+    notariaNombre: 'Notaría Ejemplo San Isidro',
+    estado: 'borrador',
+    creado: '2026-10-05',
+    actualizado: '2026-10-05',
+    accionPendiente: 'Continúa cargando los documentos que faltan para enviarlo a revisión.',
+    documentos: [
+      { id: 'd1', nombre: 'DNI de los socios', obligatorio: true, estado: 'cargado' },
+      { id: 'd2', nombre: 'Reserva de nombre SUNARP', obligatorio: true, estado: 'pendiente' },
+      { id: 'd3', nombre: 'Aportes de capital', obligatorio: true, estado: 'pendiente' },
+    ],
+    historial: [{ estado: 'borrador', fecha: '2026-10-05' }],
+  },
+];

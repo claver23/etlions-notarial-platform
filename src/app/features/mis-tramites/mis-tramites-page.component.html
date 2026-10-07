@@ -1,0 +1,49 @@
+<div class="mx-auto max-w-4xl px-5 py-10">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-[var(--color-navy-900)]">Mis trámites</h1>
+      <p class="mt-1 text-sm text-[var(--color-ink-500)]">Revisa el avance de cada expediente.</p>
+    </div>
+    <a
+      routerLink="/"
+      class="rounded-full bg-[var(--color-coral-500)] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[var(--color-coral-600)]"
+    >
+      Nuevo trámite
+    </a>
+  </div>
+
+  @if (expedientes.length) {
+    <ul class="mt-8 flex flex-col gap-4">
+      @for (exp of expedientes; track exp.id) {
+        <li>
+          <a
+            [routerLink]="['/expediente', exp.id]"
+            class="flex flex-col gap-3 rounded-2xl border border-[var(--color-sand-100)] bg-white p-5 transition hover:border-[var(--color-coral-400)] hover:shadow-[0_8px_24px_rgba(10,37,64,0.08)] sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div>
+              <p class="text-xs font-semibold text-[var(--color-ink-500)]">{{ exp.codigo }}</p>
+              <p class="mt-0.5 text-base font-bold tracking-tight text-[var(--color-navy-900)]">{{ exp.tramiteNombre }}</p>
+              <p class="mt-0.5 text-sm text-[var(--color-ink-500)]">{{ exp.notariaNombre }}</p>
+            </div>
+            <div class="flex items-center gap-4 sm:flex-col sm:items-end sm:gap-1.5">
+              <app-status-badge [estado]="exp.estado" />
+              <span class="text-xs text-[var(--color-ink-300)]">Actualizado {{ exp.actualizado }}</span>
+            </div>
+          </a>
+        </li>
+      }
+    </ul>
+  } @else {
+    <div class="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-[var(--color-sand-100)] px-6 py-16 text-center">
+      <svg viewBox="0 0 20 20" fill="none" class="h-9 w-9 text-[var(--color-ink-300)]"><rect x="4" y="2.5" width="12" height="15" rx="1.5" stroke="currentColor" stroke-width="1.5" /><path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+      <p class="mt-4 text-sm font-semibold text-[var(--color-navy-900)]">Aún no tienes trámites</p>
+      <p class="mt-1 text-sm text-[var(--color-ink-500)]">Cuando inicies uno, aparecerá aquí con su avance.</p>
+      <a
+        routerLink="/"
+        class="mt-5 rounded-full bg-[var(--color-coral-500)] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[var(--color-coral-600)]"
+      >
+        Explorar trámites
+      </a>
+    </div>
+  }
+</div>
