@@ -1,0 +1,154 @@
+<app-panel-header [breadcrumbs]="breadcrumbs()" />
+
+<main class="flex-1 px-8 py-7">
+  <div class="mb-6 flex items-center justify-between gap-4">
+    <h1 class="text-2xl font-bold tracking-tight text-[var(--color-navy-900)]">{{ esNuevo ? 'Nuevo trámite' : 'Configurar trámite' }}</h1>
+    <div class="flex items-center gap-2">
+      <a routerLink="/panel/tramites" class="rounded-lg border border-[var(--color-sand-100)] px-4 py-2 text-sm font-semibold text-[var(--color-navy-900)] transition hover:bg-white">Cancelar</a>
+      <button type="button" class="rounded-lg bg-[var(--color-coral-500)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-coral-600)]" (click)="guardar()">Guardar</button>
+    </div>
+  </div>
+
+  <div class="rounded-xl border border-[var(--color-sand-100)] bg-white">
+    <div class="grid grid-cols-1 gap-4 border-b border-[var(--color-sand-100)] p-6 sm:grid-cols-2">
+      <label class="block text-sm">
+        <span class="mb-1.5 block font-semibold text-[var(--color-ink-700)]">Nombre del trámite</span>
+        <input
+          type="text"
+          class="w-full rounded-lg border border-[var(--color-sand-100)] px-3 py-2 text-sm focus:border-[var(--color-navy-900)] focus:outline-none"
+          [value]="tramite().nombre"
+          (input)="actualizarCampo('nombre', $any($event.target).value)"
+        />
+      </label>
+      <label class="block text-sm">
+        <span class="mb-1.5 block font-semibold text-[var(--color-ink-700)]">Categoría</span>
+        <input
+          type="text"
+          class="w-full rounded-lg border border-[var(--color-sand-100)] px-3 py-2 text-sm focus:border-[var(--color-navy-900)] focus:outline-none"
+          [value]="tramite().categoria"
+          (input)="actualizarCampo('categoria', $any($event.target).value)"
+        />
+      </label>
+    </div>
+
+    <nav class="flex gap-1 border-b border-[var(--color-sand-100)] px-6" aria-label="Secciones del configurador">
+      @for (tab of [
+        { id: 'requisitos', label: 'Requisitos' },
+        { id: 'copias-partes', label: 'Copias y partes' },
+        { id: 'precios-plazos', label: 'Precios y plazos' },
+        { id: 'plantilla', label: 'Plantilla' }
+      ]; track tab.id) {
+        <button
+          type="button"
+          class="border-b-2 px-3 py-3 text-sm font-semibold transition"
+          [class]="tabActual() === tab.id ? 'border-[var(--color-coral-500)] text-[var(--color-navy-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-navy-900)]'"
+          (click)="irA($any(tab.id))"
+        >
+          {{ tab.label }}
+        </button>
+      }
+    </nav>
+
+    <div class="p-6">
+      @switch (tabActual()) {
+        @case ('requisitos') {
+          <div class="max-w-lg">
+            <p class="mb-3 text-sm text-[var(--color-ink-500)]">Documentos que el cliente debe presentar para iniciar este trámite.</p>
+            <ul class="mb-4 space-y-2">
+              @for (r of tramite().requisitos; track r; let i = $index) {
+                <li class="flex items-center justify-between gap-2 rounded-lg bg-[var(--color-sand-50)] px-3 py-2 text-sm">
+                  <span>{{ r }}</span>
+                  <button type="button" class="text-xs font-semibold text-[var(--color-alert-600)]" (click)="quitarRequisito(i)">Quitar</button>
+                </li>
+              } @empty {
+                <li class="rounded-lg bg-[var(--color-sand-50)] px-3 py-6 text-center text-sm text-[var(--color-ink-500)]">Aún no hay requisitos configurados.</li>
+              }
+            </ul>
+            <div class="flex gap-2">
+              <input
+                type="text"
+                placeholder="Ej. DNI vigente del titular"
+                class="flex-1 rounded-lg border border-[var(--color-sand-100)] px-3 py-2 text-sm focus:border-[var(--color-navy-900)] focus:outline-none"
+                [value]="requisitoNuevo()"
+                (input)="requisitoNuevo.set($any($event.target).value)"
+                (keydown.enter)="agregarRequisito()"
+              />
+              <button type="button" class="rounded-lg border border-[var(--color-sand-100)] px-4 py-2 text-sm font-semibold text-[var(--color-navy-900)] hover:bg-[var(--color-sand-50)]" (click)="agregarRequisito()">Añadir</button>
+            </div>
+          </div>
+        }
+        @case ('copias-partes') {
+          <div class="max-w-lg space-y-6">
+            <label class="block text-sm">
+              <span class="mb-1.5 block font-semibold text-[var(--color-ink-700)]">Número de copias</span>
+              <input
+                type="number"
+                min="1"
+                class="w-32 rounded-lg border border-[var(--color-sand-100)] px-3 py-2 text-sm focus:border-[var(--color-navy-900)] focus:outline-none"
+                [value]="tramite().copias"
+                (input)="actualizarCampo('copias', +$any($event.target).value)"
+              />
+            </label>
+            <div>
+              <p class="mb-2 text-sm font-semibold text-[var(--color-ink-700)]">Partes que intervienen</p>
+              <div class="space-y-2">
+                @for (p of tramite().partes; track $index; let i = $index) {
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="text"
+                      placeholder="Ej. Comprador"
+                      class="flex-1 rounded-lg border border-[var(--color-sand-100)] px-3 py-2 text-sm focus:border-[var(--color-navy-900)] focus:outline-none"
+                      [value]="p.rol"
+                      (input)="actualizarParteRol(i, $any($event.target).value)"
+                    />
+                    <button type="button" class="text-xs font-semibold text-[var(--color-alert-600)]" (click)="quitarParte(i)">Quitar</button>
+                  </div>
+                }
+              </div>
+              <button type="button" class="mt-2 text-sm font-semibold text-[var(--color-navy-900)] hover:underline" (click)="agregarParte()">+ Añadir parte</button>
+            </div>
+          </div>
+        }
+        @case ('precios-plazos') {
+          <div class="grid max-w-lg grid-cols-2 gap-4">
+            <label class="block text-sm">
+              <span class="mb-1.5 block font-semibold text-[var(--color-ink-700)]">Precio (S/)</span>
+              <input
+                type="number"
+                min="0"
+                class="w-full rounded-lg border border-[var(--color-sand-100)] px-3 py-2 text-sm focus:border-[var(--color-navy-900)] focus:outline-none"
+                [value]="tramite().precio"
+                (input)="actualizarCampo('precio', +$any($event.target).value)"
+              />
+            </label>
+            <label class="block text-sm">
+              <span class="mb-1.5 block font-semibold text-[var(--color-ink-700)]">Plazo (días hábiles)</span>
+              <input
+                type="number"
+                min="1"
+                class="w-full rounded-lg border border-[var(--color-sand-100)] px-3 py-2 text-sm focus:border-[var(--color-navy-900)] focus:outline-none"
+                [value]="tramite().plazoHabiles"
+                (input)="actualizarCampo('plazoHabiles', +$any($event.target).value)"
+              />
+            </label>
+          </div>
+        }
+        @case ('plantilla') {
+          <div class="max-w-lg">
+            <label class="block text-sm">
+              <span class="mb-1.5 block font-semibold text-[var(--color-ink-700)]">Archivo de plantilla</span>
+              <input
+                type="text"
+                placeholder="Ej. minuta-compraventa-v2.docx"
+                class="w-full rounded-lg border border-[var(--color-sand-100)] px-3 py-2 text-sm focus:border-[var(--color-navy-900)] focus:outline-none"
+                [value]="tramite().plantilla"
+                (input)="actualizarCampo('plantilla', $any($event.target).value)"
+              />
+            </label>
+            <p class="mt-2 text-xs text-[var(--color-ink-500)]">La plantilla se usa para generar la minuta del expediente al aprobarlo.</p>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</main>

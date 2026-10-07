@@ -1,0 +1,27 @@
+<header class="sticky top-0 z-20 flex h-16 items-center justify-between gap-4 border-b border-[var(--color-sand-100)] bg-white px-6">
+  <nav aria-label="Ruta de navegación" class="flex min-w-0 items-center gap-1.5 text-sm">
+    @for (crumb of breadcrumbs; track crumb.label; let last = $last) {
+      @if (crumb.ruta && !last) {
+        <a [routerLink]="crumb.ruta" class="font-medium text-[var(--color-ink-500)] transition hover:text-[var(--color-navy-900)]">{{ crumb.label }}</a>
+        <span class="text-[var(--color-ink-300)]" aria-hidden="true">/</span>
+      } @else {
+        <span class="truncate font-semibold text-[var(--color-navy-900)]">{{ crumb.label }}</span>
+      }
+    }
+  </nav>
+
+  <label class="relative hidden w-72 shrink-0 items-center sm:flex">
+    <span class="sr-only">Buscar en el panel</span>
+    <svg viewBox="0 0 24 24" fill="none" class="pointer-events-none absolute left-3 h-4 w-4 text-[var(--color-ink-300)]" aria-hidden="true">
+      <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6" />
+      <path d="M19 19l-3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+    </svg>
+    <input
+      #buscador
+      type="search"
+      placeholder="Buscar expediente, trámite o usuario…"
+      class="w-full rounded-lg border border-[var(--color-sand-100)] bg-[var(--color-sand-50)] py-2 pl-9 pr-10 text-sm text-[var(--color-ink-700)] placeholder:text-[var(--color-ink-300)] focus:border-[var(--color-navy-900)] focus:bg-white focus:outline-none"
+    />
+    <kbd class="pointer-events-none absolute right-2.5 rounded border border-[var(--color-sand-100)] bg-white px-1.5 py-0.5 text-[11px] font-semibold text-[var(--color-ink-300)]">/</kbd>
+  </label>
+</header>

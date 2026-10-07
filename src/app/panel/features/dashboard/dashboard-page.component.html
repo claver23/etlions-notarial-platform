@@ -1,0 +1,82 @@
+<app-panel-header [breadcrumbs]="breadcrumbs" />
+
+<main class="flex-1 px-8 py-7">
+  <div class="mb-6 flex items-end justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-[var(--color-navy-900)]">Necesita tu atención hoy</h1>
+      <p class="mt-1 text-sm text-[var(--color-ink-500)]">{{ pendientesHoy().length }} expedientes con acción pendiente</p>
+    </div>
+    <a
+      routerLink="/panel/expedientes"
+      class="rounded-lg border-2 border-[var(--color-navy-900)] px-4 py-2 text-sm font-semibold text-[var(--color-navy-900)] transition hover:bg-[var(--color-navy-900)] hover:text-white"
+      >Ver bandeja completa</a
+    >
+  </div>
+
+  <section class="overflow-hidden rounded-xl border border-[var(--color-sand-100)] bg-white">
+    <table class="w-full text-left text-sm">
+      <thead>
+        <tr class="border-b border-[var(--color-sand-100)] text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">
+          <th class="px-5 py-3">Expediente</th>
+          <th class="px-5 py-3">Cliente</th>
+          <th class="px-5 py-3">Estado</th>
+          <th class="px-5 py-3">Asignado a</th>
+          <th class="px-5 py-3">Qué falta</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (e of pendientesHoy(); track e.id) {
+          <tr class="h-12 border-b border-[var(--color-sand-100)] last:border-0 hover:bg-[var(--color-sand-50)]">
+            <td class="px-5 py-0 font-semibold">
+              <a [routerLink]="['/panel/expedientes', e.id]" class="text-[var(--color-navy-900)] hover:underline">{{ e.codigo }}</a>
+            </td>
+            <td class="px-5 py-0 text-[var(--color-ink-700)]">{{ e.clienteNombre ?? '—' }}</td>
+            <td class="px-5 py-0">
+              <span
+                class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
+                [style.background]="estadoInfo(e.estado).bgVar"
+                [style.color]="estadoInfo(e.estado).colorVar"
+              >
+                {{ estadoInfo(e.estado).label }}
+              </span>
+            </td>
+            <td class="px-5 py-0 text-[var(--color-ink-500)]">{{ e.asignadoA ?? 'Sin asignar' }}</td>
+            <td class="max-w-xs truncate px-5 py-0 text-[var(--color-ink-500)]">{{ e.accionPendiente ?? '—' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="px-5 py-10 text-center text-sm text-[var(--color-ink-500)]">No hay expedientes que requieran atención hoy.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div class="rounded-xl border border-[var(--color-sand-100)] bg-white px-5 py-4">
+      <p class="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">Tiempo promedio de cierre</p>
+      <p class="mt-1 text-2xl font-bold tracking-tight text-[var(--color-navy-900)]">{{ tiempoPromedioDias() }} días</p>
+    </div>
+    <div class="rounded-xl border border-[var(--color-sand-100)] bg-white px-5 py-4">
+      <p class="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">Trámites activos</p>
+      <p class="mt-1 text-2xl font-bold tracking-tight text-[var(--color-navy-900)]">{{ tramitesActivos() }}</p>
+    </div>
+    <div class="rounded-xl border border-[var(--color-sand-100)] bg-white px-5 py-4">
+      <p class="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">Tasa de observación</p>
+      <p class="mt-1 text-2xl font-bold tracking-tight text-[var(--color-navy-900)]">{{ tasaObservacion() }}%</p>
+    </div>
+  </div>
+
+  <div class="mt-6 flex flex-wrap items-center gap-2 text-sm">
+    <span class="font-semibold text-[var(--color-ink-500)]">Expedientes por estado:</span>
+    @for (grupo of porEstado(); track grupo.estado) {
+      <span
+        class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
+        [style.background]="grupo.info.bgVar"
+        [style.color]="grupo.info.colorVar"
+      >
+        {{ grupo.info.label }} · {{ grupo.total }}
+      </span>
+    }
+  </div>
+</main>

@@ -1,0 +1,71 @@
+<app-panel-header [breadcrumbs]="breadcrumbs" />
+
+<main class="flex-1 px-8 py-7">
+  <div class="mb-5 flex items-end justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-[var(--color-navy-900)]">Reportes y auditoría</h1>
+      <p class="mt-1 text-sm text-[var(--color-ink-500)]">{{ filtrados().length }} eventos registrados</p>
+    </div>
+    <button type="button" class="rounded-lg border border-[var(--color-sand-100)] bg-white px-4 py-2 text-sm font-semibold text-[var(--color-navy-900)] transition hover:bg-[var(--color-sand-50)]" (click)="exportar()">
+      Exportar CSV
+    </button>
+  </div>
+
+  <div class="mb-4 flex flex-wrap gap-3">
+    <label class="text-sm">
+      <span class="sr-only">Filtrar por usuario</span>
+      <select
+        class="rounded-lg border border-[var(--color-sand-100)] bg-white px-3 py-2 text-sm"
+        [value]="filtroUsuario()"
+        (change)="filtroUsuario.set($any($event.target).value)"
+      >
+        <option value="todos">Todos los usuarios</option>
+        @for (u of usuarios(); track u) {
+          <option [value]="u">{{ u }}</option>
+        }
+      </select>
+    </label>
+    <label class="text-sm">
+      <span class="sr-only">Filtrar por acción</span>
+      <select
+        class="rounded-lg border border-[var(--color-sand-100)] bg-white px-3 py-2 text-sm"
+        [value]="filtroAccion()"
+        (change)="filtroAccion.set($any($event.target).value)"
+      >
+        <option value="todas">Todas las acciones</option>
+        @for (a of acciones(); track a) {
+          <option [value]="a">{{ a }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  <section class="overflow-hidden rounded-xl border border-[var(--color-sand-100)] bg-white">
+    <table class="w-full text-left text-sm">
+      <thead>
+        <tr class="border-b border-[var(--color-sand-100)] text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">
+          <th class="px-5 py-3">Fecha</th>
+          <th class="px-2 py-3">Usuario</th>
+          <th class="px-2 py-3">Acción</th>
+          <th class="px-2 py-3">Entidad</th>
+          <th class="px-2 py-3">Detalle</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (e of filtrados(); track e.id) {
+          <tr class="h-12 border-b border-[var(--color-sand-100)] text-[var(--color-ink-700)] last:border-0 hover:bg-[var(--color-sand-50)]">
+            <td class="px-5 py-0 whitespace-nowrap text-[var(--color-ink-500)]">{{ e.fecha }}</td>
+            <td class="px-2 py-0 font-semibold text-[var(--color-navy-900)]">{{ e.usuario }}</td>
+            <td class="px-2 py-0">{{ e.accion }}</td>
+            <td class="px-2 py-0">{{ e.entidad }}</td>
+            <td class="px-2 py-0 text-[var(--color-ink-500)]">{{ e.detalle }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="px-5 py-14 text-center text-sm text-[var(--color-ink-500)]">No hay eventos que coincidan con los filtros seleccionados.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</main>

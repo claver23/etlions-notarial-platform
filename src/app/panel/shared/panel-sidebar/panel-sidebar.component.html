@@ -1,0 +1,49 @@
+<aside class="flex h-screen w-60 shrink-0 flex-col bg-[var(--color-navy-900)] text-white">
+  <div class="flex h-16 items-center gap-2.5 border-b border-white/10 px-5">
+    <img src="assets/brand/logo-icon.png" alt="" class="h-8 w-8" width="32" height="32" />
+    <span class="text-sm font-bold tracking-tight">
+      ET<span class="text-[var(--color-coral-400)]">LIONS</span>
+    </span>
+  </div>
+
+  <nav class="flex-1 space-y-1 px-3 py-4" aria-label="Navegación del panel">
+    @for (item of items; track item.ruta) {
+      <a
+        [routerLink]="item.ruta"
+        routerLinkActive="bg-white/10 text-white"
+        class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition hover:bg-white/5 hover:text-white"
+      >
+        <svg viewBox="0 0 24 24" fill="none" class="h-4.5 w-4.5 shrink-0" aria-hidden="true">
+          @switch (item.icon) {
+            @case ('grid') {
+              <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+            }
+            @case ('folder') {
+              <path d="M3.5 7a1.5 1.5 0 0 1 1.5-1.5h4l2 2.2h9a1.5 1.5 0 0 1 1.5 1.5v8.3a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+            }
+            @case ('doc') {
+              <path d="M7 3.5h7l4 4v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+              <path d="M9.5 12h5M9.5 15.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            }
+            @case ('users') {
+              <circle cx="9" cy="8.5" r="3" stroke="currentColor" stroke-width="1.6" />
+              <path d="M3.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              <circle cx="16.5" cy="9" r="2.3" stroke="currentColor" stroke-width="1.6" />
+              <path d="M15 14.3c2.6.2 4.8 2 4.8 4.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            }
+            @case ('clock') {
+              <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
+              <path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            }
+          }
+        </svg>
+        {{ item.label }}
+      </a>
+    }
+  </nav>
+
+  <div class="border-t border-white/10 px-5 py-4">
+    <p class="text-xs font-semibold text-white/50">Notaría Ejemplo Miraflores</p>
+    <p class="text-xs text-white/35">Sesión de un solo tenant (demo)</p>
+  </div>
+</aside>

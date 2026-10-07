@@ -12,7 +12,7 @@ export interface EstadoHistorial {
   nota?: string;
 }
 
-export type EstadoDocumento = 'pendiente' | 'cargado' | 'observado' | 'validado';
+export type EstadoDocumento = 'pendiente' | 'cargado' | 'observado' | 'rechazado' | 'validado';
 
 export interface DocumentoExpediente {
   id: string;
@@ -33,4 +33,8 @@ export interface Expediente {
   documentos: DocumentoExpediente[];
   historial: EstadoHistorial[];
   accionPendiente?: string;
+  // Campos usados por el panel de notaría (segunda superficie) — opcionales
+  // para no afectar el portal del cliente, que no los muestra.
+  clienteNombre?: string;
+  asignadoA?: string;
 }

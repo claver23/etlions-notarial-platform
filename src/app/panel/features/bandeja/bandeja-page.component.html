@@ -1,0 +1,183 @@
+<app-panel-header [breadcrumbs]="breadcrumbs" />
+
+<main class="flex-1 px-8 py-7">
+  <div class="mb-5 flex items-end justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-[var(--color-navy-900)]">Bandeja de expedientes</h1>
+      <p class="mt-1 text-sm text-[var(--color-ink-500)]">{{ filtrados().length }} de {{ expedientes().length }} expedientes</p>
+    </div>
+    <label class="relative flex w-72 items-center">
+      <span class="sr-only">Buscar en la bandeja</span>
+      <svg viewBox="0 0 24 24" fill="none" class="pointer-events-none absolute left-3 h-4 w-4 text-[var(--color-ink-300)]" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6" />
+        <path d="M19 19l-3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <input
+        type="search"
+        placeholder="Buscar por código, cliente o trámite"
+        class="w-full rounded-lg border border-[var(--color-sand-100)] bg-white py-2 pl-9 pr-3 text-sm text-[var(--color-ink-700)] placeholder:text-[var(--color-ink-300)] focus:border-[var(--color-navy-900)] focus:outline-none"
+        [value]="busqueda()"
+        (input)="busqueda.set($any($event.target).value)"
+      />
+    </label>
+  </div>
+
+  <div class="mb-4 flex flex-wrap gap-2" role="group" aria-label="Filtrar por estado">
+    @for (estado of estadosFiltro; track estado) {
+      <button
+        type="button"
+        class="rounded-full border px-3 py-1.5 text-xs font-semibold transition"
+        [class]="
+          filtroEstado() === estado
+            ? 'border-[var(--color-navy-900)] bg-[var(--color-navy-900)] text-white'
+            : 'border-[var(--color-sand-100)] bg-white text-[var(--color-ink-500)] hover:border-[var(--color-navy-300)]'
+        "
+        (click)="filtroEstado.set(estado)"
+      >
+        {{ estadoLabel(estado) }}
+      </button>
+    }
+  </div>
+
+  <section class="overflow-hidden rounded-xl border border-[var(--color-sand-100)] bg-white">
+    <table class="w-full text-left text-sm">
+      <thead>
+        <tr class="border-b border-[var(--color-sand-100)] text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">
+          <th class="w-10 px-5 py-3">
+            <input
+              type="checkbox"
+              aria-label="Seleccionar todos los expedientes visibles"
+              [checked]="todosSeleccionadosEnPagina()"
+              (change)="alternarTodos()"
+            />
+          </th>
+          <th class="px-2 py-3">Código</th>
+          <th class="px-2 py-3">Cliente</th>
+          <th class="px-2 py-3">Trámite</th>
+          <th class="px-2 py-3">Estado</th>
+          <th class="px-2 py-3">Asignado a</th>
+          <th class="px-2 py-3">Actualizado</th>
+          <th class="px-2 py-3 text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (e of filtrados(); track e.id) {
+          <tr class="h-12 border-b border-[var(--color-sand-100)] text-[var(--color-ink-700)] last:border-0 hover:bg-[var(--color-sand-50)]">
+            <td class="px-5 py-0">
+              <input
+                type="checkbox"
+                [attr.aria-label]="'Seleccionar ' + e.codigo"
+                [checked]="estaSeleccionado(e.id)"
+                (change)="alternarSeleccion(e.id)"
+              />
+            </td>
+            <td class="px-2 py-0 font-semibold text-[var(--color-navy-900)]">{{ e.codigo }}</td>
+            <td class="px-2 py-0">{{ e.clienteNombre ?? '—' }}</td>
+            <td class="px-2 py-0">{{ e.tramiteNombre }}</td>
+            <td class="px-2 py-0">
+              <span
+                class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap"
+                [style.background]="estadoInfo(e.estado).bgVar"
+                [style.color]="estadoInfo(e.estado).colorVar"
+              >
+                {{ estadoInfo(e.estado).label }}
+              </span>
+            </td>
+            <td class="px-2 py-0 text-[var(--color-ink-500)]">{{ e.asignadoA ?? 'Sin asignar' }}</td>
+            <td class="px-2 py-0 text-[var(--color-ink-500)]">{{ e.actualizado }}</td>
+            <td class="px-2 py-0">
+              <div class="flex items-center justify-end gap-1">
+                <button type="button" aria-label="Ver detalle" class="group relative rounded-lg p-1.5 text-[var(--color-ink-500)] transition hover:bg-[var(--color-sand-100)] hover:text-[var(--color-navy-900)] focus-visible:bg-[var(--color-sand-100)]" (click)="abrirDrawer(e)">
+                  <span class="pointer-events-none absolute bottom-full right-0 mb-1.5 hidden whitespace-nowrap rounded-md bg-[var(--color-navy-900)] px-2 py-1 text-xs text-white group-hover:block group-focus-visible:block">Ver detalle</span>
+                  <svg viewBox="0 0 24 24" fill="none" class="h-4.5 w-4.5"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" stroke="currentColor" stroke-width="1.6" /><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6" /></svg>
+                </button>
+                <button type="button" aria-label="Asignarme" class="group relative rounded-lg p-1.5 text-[var(--color-ink-500)] transition hover:bg-[var(--color-sand-100)] hover:text-[var(--color-navy-900)] focus-visible:bg-[var(--color-sand-100)]" (click)="asignarme(e)">
+                  <span class="pointer-events-none absolute bottom-full right-0 mb-1.5 hidden whitespace-nowrap rounded-md bg-[var(--color-navy-900)] px-2 py-1 text-xs text-white group-hover:block group-focus-visible:block">Asignarme</span>
+                  <svg viewBox="0 0 24 24" fill="none" class="h-4.5 w-4.5"><circle cx="9" cy="8.5" r="3" stroke="currentColor" stroke-width="1.6" /><path d="M3.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /><path d="M18 8.5v5M15.5 11h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+                </button>
+                <button type="button" aria-label="Observar" class="group relative rounded-lg p-1.5 text-[var(--color-pending-600)] transition hover:bg-[var(--color-pending-100)] focus-visible:bg-[var(--color-pending-100)]" (click)="observar(e)">
+                  <span class="pointer-events-none absolute bottom-full right-0 mb-1.5 hidden whitespace-nowrap rounded-md bg-[var(--color-navy-900)] px-2 py-1 text-xs text-white group-hover:block group-focus-visible:block">Observar</span>
+                  <svg viewBox="0 0 24 24" fill="none" class="h-4.5 w-4.5"><path d="M12 3.5l9 16h-18z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /><path d="M12 10v3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /><circle cx="12" cy="16" r="0.9" fill="currentColor" /></svg>
+                </button>
+                <button type="button" aria-label="Aprobar" class="group relative rounded-lg p-1.5 text-[var(--color-success-600)] transition hover:bg-[var(--color-success-100)] focus-visible:bg-[var(--color-success-100)]" (click)="aprobar(e)">
+                  <span class="pointer-events-none absolute bottom-full right-0 mb-1.5 hidden whitespace-nowrap rounded-md bg-[var(--color-navy-900)] px-2 py-1 text-xs text-white group-hover:block group-focus-visible:block">Aprobar</span>
+                  <svg viewBox="0 0 24 24" fill="none" class="h-4.5 w-4.5"><path d="M4.5 12.5l5 5 10-11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="px-5 py-14 text-center text-sm text-[var(--color-ink-500)]">
+              Ningún expediente coincide con el filtro o la búsqueda actual.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</main>
+
+@if (seleccionados().size > 0) {
+  <div class="sticky bottom-0 z-10 flex items-center justify-between gap-4 border-t border-[var(--color-sand-100)] bg-white px-8 py-3.5 shadow-[0_-4px_12px_rgba(10,37,64,0.06)]">
+    <p class="text-sm font-semibold text-[var(--color-navy-900)]">{{ seleccionados().size }} expediente(s) seleccionados</p>
+    <div class="flex items-center gap-2">
+      <button type="button" class="rounded-lg border border-[var(--color-sand-100)] px-3.5 py-2 text-sm font-semibold text-[var(--color-ink-500)] transition hover:bg-[var(--color-sand-50)]" (click)="limpiarSeleccion()">
+        Cancelar
+      </button>
+      <button type="button" class="rounded-lg border border-[var(--color-pending-500)] px-3.5 py-2 text-sm font-semibold text-[var(--color-pending-600)] transition hover:bg-[var(--color-pending-100)]" (click)="pedirConfirmacionBulk('observar')">
+        Observar seleccionados
+      </button>
+      <button type="button" class="rounded-lg bg-[var(--color-success-500)] px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-success-600)]" (click)="pedirConfirmacionBulk('aprobar')">
+        Aprobar seleccionados
+      </button>
+    </div>
+  </div>
+}
+
+<app-drawer [abierto]="!!expedienteDrawer()" [titulo]="expedienteDrawer()?.codigo ?? ''" (cerrar)="cerrarDrawer()">
+  @if (expedienteDrawer(); as e) {
+    <dl class="space-y-4 text-sm">
+      <div>
+        <dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">Estado</dt>
+        <dd class="mt-1">
+          <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold" [style.background]="estadoInfo(e.estado).bgVar" [style.color]="estadoInfo(e.estado).colorVar">
+            {{ estadoInfo(e.estado).label }}
+          </span>
+        </dd>
+      </div>
+      <div><dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">Cliente</dt><dd class="mt-1 text-[var(--color-ink-700)]">{{ e.clienteNombre ?? '—' }}</dd></div>
+      <div><dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">Trámite</dt><dd class="mt-1 text-[var(--color-ink-700)]">{{ e.tramiteNombre }}</dd></div>
+      <div><dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">Notaría</dt><dd class="mt-1 text-[var(--color-ink-700)]">{{ e.notariaNombre }}</dd></div>
+      <div><dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">Asignado a</dt><dd class="mt-1 text-[var(--color-ink-700)]">{{ e.asignadoA ?? 'Sin asignar' }}</dd></div>
+      @if (e.accionPendiente) {
+        <div><dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">Acción pendiente</dt><dd class="mt-1 text-[var(--color-ink-700)]">{{ e.accionPendiente }}</dd></div>
+      }
+      <div>
+        <dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-500)]">Documentos</dt>
+        <dd class="mt-2 space-y-1.5">
+          @for (d of e.documentos; track d.id) {
+            <p class="flex items-center justify-between gap-2 rounded-lg bg-[var(--color-sand-50)] px-3 py-2">
+              <span>{{ d.nombre }}</span>
+              <span class="text-xs font-semibold text-[var(--color-ink-500)]">{{ d.estado }}</span>
+            </p>
+          }
+        </dd>
+      </div>
+    </dl>
+    <a
+      [routerLink]="['/panel/expedientes', e.id]"
+      class="mt-6 block rounded-lg bg-[var(--color-navy-900)] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[var(--color-navy-700)]"
+      >Ver expediente completo</a
+    >
+  }
+</app-drawer>
+
+<app-confirm-modal
+  [abierto]="!!confirmacionBulk()"
+  [titulo]="confirmacionBulk() === 'aprobar' ? 'Aprobar expedientes seleccionados' : 'Observar expedientes seleccionados'"
+  [mensaje]="'Esta acción cambiará el estado de ' + seleccionados().size + ' expediente(s). ¿Deseas continuar?'"
+  [textoConfirmar]="confirmacionBulk() === 'aprobar' ? 'Aprobar' : 'Observar'"
+  (confirmar)="confirmarBulk()"
+  (cancelar)="confirmacionBulk.set(null)"
+/>

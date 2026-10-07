@@ -18,6 +18,27 @@
   Font note: Inter is brief-pinned by the client ("Sans-serif moderna (Inter,
   Helvetica Neue o similar)"), not a default — kept as-is, hook finding
   suppressed via ignore-value.
+
+  ---
+
+  ETLIONS NOTARIAL — Panel de notaría (segunda superficie, Operate)
+  Direction contract (impeccable new-work, brief-pinned — no concept roll)
+
+  THESIS: la bandeja de expedientes es el centro de gravedad, no el
+  dashboard; se rechaza la plantilla de "tablero con tarjetas de métricas"
+  como pantalla principal.
+  OWN-WORLD: hereda navy/coral/sand/ink de DESIGN.md y añade semántica de
+  estado operativo (verde éxito, rojo alerta, ámbar pendiente) para
+  documentos, trámites y usuarios — nunca reemplaza el badge de 6 estados
+  del expediente. Sidebar navy fijo, tablas densas (fila 48px), drawer
+  derecho, Inter en escala compacta (H1 24/H2 20/H3 16/body 14/caption 12).
+  STORY: el personal de notaría ve en segundos qué expediente necesita su
+  atención hoy, valida o rechaza documentos con trazabilidad, y configura
+  su catálogo sin fricción.
+  FIRST VIEWPORT: dashboard con acciones pendientes del día listadas como
+  tabla accionable, no como tarjetas decorativas; métricas secundarias.
+  FORM: sistema sidebar + tabla densa + drawer + modal ya definido por el
+  cliente, aplicado con disciplina en las 7 pantallas del panel.
 */
 
 @import 'tailwindcss';
@@ -52,6 +73,19 @@
   --color-status-approved: #0a2540;
   --color-status-signed: #e67e50;
   --color-status-legalized: #0f9d6e;
+
+  /* Panel de notaría — semántica operativa adicional (aditiva, no reemplaza lo anterior) */
+  --color-success-600: #15803d;
+  --color-success-500: #16a34a;
+  --color-success-100: #dcfce7;
+
+  --color-alert-600: #b91c1c;
+  --color-alert-500: #dc2626;
+  --color-alert-100: #fee2e2;
+
+  --color-pending-600: #b45309;
+  --color-pending-500: #f59e0b;
+  --color-pending-100: #fef3c7;
 }
 
 html {
